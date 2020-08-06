@@ -1,0 +1,86 @@
+1) Instalar PostgreSQL
+
+	sudo apt update
+	sudo apt install postgresql postgresql-contrib
+	
+2) Inciar Sesion en postgres (rol = postgres)
+	sudo -u postgres psql
+	
+3) Crear la Base de Datos
+	createdb pruebaVial
+
+4) Conectarse a la BD creada en el punto anterior
+	exit # Para salir de la base postgres
+	:$ psql pruebaVial
+
+5) Revisar conexion
+	\conninfo
+	
+6) Preparamos el .xlss. Lo dividimos en un .csv para cada sheet
+   
+7) Creamos las tablas
+	CREATE TABLE segmentos(
+		id serial PRIMARY KEY,
+		longitud float (2) NOT NULL,
+		tipo_via varchar (20) NOT NULL,
+		estrato serial NOT NULL
+		);
+
+	CREATE TABLE nomenclatura(
+		id_segmento serial PRIMARY KEY,
+		via_generadora varchar (20) NOT NULL,
+		n_via_gen serial NOT NULL,
+		cruce_desde varchar (20) NOT NULL,
+		n_cruce_desde varchar (20) NOT NULL,
+		cruce_hasta varchar (20) NOT NULL,
+		n_cruce_hasta varchar (20) NOT NULL
+		);	
+
+	CREATE TABLE calzadas(
+		id_segmento serial NOT NULL,
+		funcionalidad serial NOT NULL,
+		superficie serial NOT NULL,
+		mdr float (4) NOT NULL,
+		opi float (4) NOT NULL,
+		iri float (4) NOT NULL
+		);
+		
+	CREATE TABLE bordillos(
+		id_segmento serial NOT NULL,
+		estado serial NOT NULL,
+		longitud float(4) NOT NULL,
+		orden serial NOT NULL,
+		indice_condicion float(4) NOT NULL
+		);
+
+	CREATE TABLE funcionalidad(
+		id serial NOT NULL,
+		funcionalidad varchar(12) NOT NULL
+		);
+		
+	CREATE TABLE superficie(
+		id serial NOT NULL,
+		superficie varchar(12) NOT NULL
+		);
+		
+	CREATE TABLE estado(
+		id serial NOT NULL,
+		estado varchar(15) NOT NULL
+		);
+
+8)Luego importamos desde consola con el comando COPY de postgreSQL
+	
+	-COPY segmentos (id, longitud, tipo_via, estrato) FROM '/home/alex/pruebaGeoSAT/tablas/segmentos.csv' delimiter ';' csv header;
+	
+	-COPY nomenclatura (id_segmento, via_generadora, n_via_gen, cruce_desde, n_cruce_desde, cruce_hasta, n_cruce_hasta) FROM '/home/alex/pruebaGeoSAT/tablas/nomenclatura.csv' delimiter ';' csv header;
+	
+	-COPY calzadas (id_segmento, funcionalidad, superficie, mdr, opi, iri) FROM '/home/alex/pruebaGeoSAT/tablas/calzadas.csv' delimiter ';' csv header;
+	
+	-COPY bordillos (id_segmento, estado, longitud, orden, indice_condicion) FROM '/home/alex/pruebaGeoSAT/tablas/bordillos.csv' delimiter ';' csv header;
+	
+	-COPY funcionalidad (id, funcionalidad) FROM '/home/alex/pruebaGeoSAT/tablas/funcionalidad.csv' delimiter ';' csv header;
+	
+	-COPY superficie (id, superficie) FROM '/home/alex/pruebaGeoSAT/tablas/superficie.csv' delimiter ';' csv header;
+	
+	-COPY estado (id, estado) FROM '/home/alex/pruebaGeoSAT/tablas/estado.csv' delimiter ';' csv header;
+		
